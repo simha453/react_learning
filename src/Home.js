@@ -1,5 +1,6 @@
-import react, { useState } from "react";
-import BlogList from  "./BlogList";
+import react, { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+import useFetch from "./useFetch";
 const Home = () => {
   const handleClick = () => {
     alert("testing");
@@ -14,17 +15,37 @@ const Home = () => {
     setName({ name: "chalam" });
     setName({ name: "Simhachalam" });
   };
+  const [dummy, setdummy] = useState(true);
 
-  const [blogs, setBlogs] = useState([
-    { title: "My new website", body: "lorem ipsum...", author: "mario", id: 1 },
-    { title: "Welcome party!", body: "lorem ipsum...", author: "yoshi", id: 2 },
-    {
-      title: "Web dev top tips",
-      body: "lorem ipsum...",
-      author: "mario",
-      id: 3,
-    },
-  ]);
+  
+
+//using hooks
+
+const {error,blogs,isPending} = useFetch("http://localhost:8000/blogs");
+const [newdata,SetNewdata] = useState([]);
+// console.log(newdata);
+// let a = blogs;
+useEffect(() => {
+  SetNewdata(blogs);
+}, [blogs])
+const handleDelete = (id) => {
+  const newblogs = blogs.filter((data) => data.id !== id);
+  SetNewdata(newblogs);
+};
+const handleUpdate = (id) => {
+  let data = blogs.find((val) => val.id === id);
+  data.author = "jai balayya";
+  console.log(data);
+  let arrayData = blogs;
+  let index = arrayData.findIndex((e) => e.id === id);
+  arrayData.splice(index, 1, data);
+  console.log(arrayData);
+  SetNewdata(arrayData);
+  setdummy(!dummy);
+  // const newBlog=blogs.((data)=> data.id===id)
+  // setBlogs(blogs.author='Updated');
+};
+
 
   return (
     <div className="home">
@@ -41,9 +62,21 @@ const Home = () => {
       <br />
       <button onClick={handleName}>Change my name</button>
       <br />
-      <br />    
-     <BlogList blogdata={blogs} title={'List of Blogs'}/>
-     <BlogList blogdata={blogs.filter((data)=>(data.author==='mario'))} title={'Mario Blogs'}/>
+      <br />
+      {error && <div>{ error}</div>}
+      {isPending && <div>Loading ...</div>}
+      <BlogList
+        blogdata={newdata}
+        title={"List of Blogs"}
+        functionName={handleDelete}
+        name={"Delete Blog"}
+      />
+      {/* <BlogList
+        blogdata={blogs.filter((data) => data.author === "mario")}
+        title={"Mario Blogs"}
+        functionName={handleUpdate}
+        name={"Update Blog"}
+      /> */}
     </div>
   );
 };
