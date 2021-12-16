@@ -6,7 +6,6 @@ const useFetch = (url) => {
   const [error, seterror] = useState(null)
 
   useEffect(() => {
-   
         fetch(url)
           .then((res) => {
             if(!res.ok){

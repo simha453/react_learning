@@ -21,7 +21,7 @@ const Home = () => {
 
 //using hooks
 
-const {error,blogs,isPending} = useFetch("http://localhost:8000/blogs");
+const {error,blogs,isPending} = useFetch("http://localhost:3000/blogs");
 const [newdata,SetNewdata] = useState([]);
 // console.log(newdata);
 // let a = blogs;
